@@ -14,7 +14,7 @@ Organización **por dominio**: cada concepto del negocio vive en su propio paque
 con sus clases, en lugar de agrupar todo en una sola carpeta `domain`.
 
 ```
-proyecto-programacion1/
+semestral-programacion1/
 ├── src/
 │   ├── main/
 │   │   ├── app/
@@ -73,6 +73,11 @@ java -cp out PruebasSistema
 ## Diagrama de clases
 
 Fuente editable en [`docs/uml/diagrama-clases.puml`](docs/uml/diagrama-clases.puml).
+
+Visor interactivo del diagrama (HTML + Tailwind + SVG, permite zoom, filtros por
+paquete, buscador e inspector de clases): repositorio
+[`semestral-programacion1UML`](https://github.com/Jorge-Dev27/semestral-programacion1UML)
+(abrir `index.html`).
 
 ```mermaid
 classDiagram
