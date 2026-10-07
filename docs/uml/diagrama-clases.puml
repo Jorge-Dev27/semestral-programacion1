@@ -1,0 +1,192 @@
+@startuml Sistema de Gestion de Transporte Publico
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide circle
+
+package "usuario" {
+
+  abstract class Usuario {
+    # idUsuario : int
+    # nombre : String
+    # correo : String
+    - contrasena : String
+    # rol : String
+    + iniciarSesion(correo : String, contrasena : String) : boolean
+    + cerrarSesion() : void
+    + {abstract} mostrarMenu() : void
+    # encriptarContrasena(texto : String) : String
+  }
+
+  class Pasajero {
+    - cedula : String
+    - telefono : String
+    - saldo : double
+    + comprarBoleto(horario : Horario) : Boleto
+    + recargarSaldo(monto : double) : void
+    + consultarRutas() : List<Ruta>
+    + mostrarMenu() : void
+  }
+
+  class Conductor {
+    - numeroLicencia : String
+    - tipoLicencia : String
+    - disponible : boolean
+    + validarBoleto(boleto : Boleto) : boolean
+    + registrarIncidencia(tipo : String, descripcion : String) : Incidencia
+    + consultarTurnos() : List<Turno>
+    + mostrarMenu() : void
+  }
+
+  class Administrador {
+    - cargo : String
+    + registrarRuta(ruta : Ruta) : void
+    + asignarUnidad(unidad : Unidad, ruta : Ruta) : void
+    + crearTurno(c : Conductor, u : Unidad, r : Ruta, fecha : LocalDate) : Turno
+    + generarReporte(tipo : String) : Reporte
+    + mostrarMenu() : void
+  }
+
+}
+
+package "ruta" {
+
+  class Ruta {
+    - idRuta : int
+    - nombre : String
+    - origen : String
+    - destino : String
+    - tarifa : double
+    - activa : boolean
+    + agregarParada(parada : Parada) : void
+    + agregarHorario(horario : Horario) : void
+    + obtenerParadas() : List<Parada>
+    + cambiarEstado(activa : boolean) : void
+  }
+
+  class Parada {
+    - idParada : int
+    - nombre : String
+    - ubicacion : String
+    - orden : int
+    - idRuta : int
+    + mostrarInfo() : String
+    + esTerminal() : boolean
+  }
+
+  class Horario {
+    - idHorario : int
+    - horaSalida : LocalTime
+    - horaLlegada : LocalTime
+    - diasOperacion : String
+    - idRuta : int
+    + estaDisponible(dia : String) : boolean
+    + calcularDuracion() : int
+  }
+
+}
+
+package "boleto" {
+
+  class Boleto {
+    - idBoleto : int
+    - codigo : String
+    - fechaCompra : LocalDateTime
+    - precio : double
+    - estado : String
+    - idHorario : int
+    - idPasajero : int
+    + validar() : boolean
+    + anular() : void
+    + estaVigente() : boolean
+    + generarCodigo() : String
+  }
+
+}
+
+package "turno" {
+
+  class Turno {
+    - idTurno : int
+    - fecha : LocalDate
+    - horaInicio : LocalTime
+    - horaFin : LocalTime
+    - idRuta : int
+    - idConductor : int
+    - idUnidad : int
+    + calcularHoras() : double
+    + finalizar() : void
+  }
+
+}
+
+package "unidad" {
+
+  class Unidad {
+    - idUnidad : int
+    - placa : String
+    - modelo : String
+    - capacidad : int
+    - estado : String
+    - idRuta : int
+    + asignarRuta(ruta : Ruta) : void
+    + cambiarEstado(estado : String) : void
+    + estaDisponible() : boolean
+  }
+
+}
+
+package "incidencia" {
+
+  class Incidencia {
+    - idIncidencia : int
+    - fecha : LocalDateTime
+    - tipo : String
+    - descripcion : String
+    - estado : String
+    - idUnidad : int
+    - idConductor : int
+    + cambiarEstado(estado : String) : void
+    + cerrar() : void
+  }
+
+}
+
+package "reporte" {
+
+  class Reporte {
+    - idReporte : int
+    - tipo : String
+    - fechaGeneracion : LocalDate
+    - contenido : String
+    - idRuta : int
+    - idUnidad : int
+    + generarPorRuta(ruta : Ruta) : void
+    + generarPorUnidad(unidad : Unidad) : void
+    + exportar() : String
+  }
+
+}
+
+Usuario <|-- Pasajero
+Usuario <|-- Conductor
+Usuario <|-- Administrador
+
+Pasajero "1" -- "0..*" Boleto : compra
+Boleto "0..*" -- "1" Horario : corresponde a
+Conductor "1" -- "0..*" Incidencia : registra
+Incidencia "0..*" -- "1" Unidad : ocurre en
+
+Administrador "1" -- "0..*" Turno : crea
+Conductor "1" -- "0..*" Turno : asignado a
+Unidad "1" -- "0..*" Turno : usada en
+Ruta "1" -- "0..*" Turno : programado en
+
+Ruta "1" *-- "2..*" Parada : contiene
+Ruta "1" -- "1..*" Horario : tiene
+Ruta "0..*" -- "0..1" Unidad : asigna
+
+Administrador "1" -- "0..*" Reporte : genera
+Ruta "1" -- "0..*" Reporte : sobre
+Unidad "1" -- "0..*" Reporte : sobre
+
+@enduml
