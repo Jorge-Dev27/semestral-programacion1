@@ -2,9 +2,9 @@
 
 Proyecto Semestral — Programación I
 Universidad Tecnológica de Panamá — Facultad de Ingeniería de Sistemas Computacionales
-Prof. Víctor Sánchez
+Prof. Victor Sarmiento
 
-Integrantes: Eric De León, Jorge Piñ, Carlos Barría, Ángel Díaz.
+Integrantes: Eric De León, Jorge Pitti, Carlos Barría, Ángel Díaz.
 
 Administra rutas, unidades, conductores, horarios, boletos y reportes.
 
